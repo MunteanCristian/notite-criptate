@@ -30,7 +30,7 @@ public class NoteController {
         return noteService.createNote(note);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/up")
     public Note updateNote(@PathVariable Long id, @RequestBody Note note){
         return noteService.updateNote(id, note);
     }
