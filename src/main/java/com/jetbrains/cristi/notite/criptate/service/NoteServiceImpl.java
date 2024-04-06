@@ -3,13 +3,19 @@ package com.jetbrains.cristi.notite.criptate.service;
 import com.jetbrains.cristi.notite.criptate.model.Note;
 import com.jetbrains.cristi.notite.criptate.repository.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class NoteServiceImpl implements NoteService{
+@Service
+public class NoteServiceImpl implements NoteService {
+
+    private final NoteRepository noteRepository;
 
     @Autowired
-    private NoteRepository noteRepository;
+    public NoteServiceImpl(NoteRepository noteRepository) {
+        this.noteRepository = noteRepository;
+    }
 
     @Override
     public List<Note> getAllNotes() {
@@ -28,11 +34,13 @@ public class NoteServiceImpl implements NoteService{
 
     @Override
     public Note updateNote(Long id, Note note) {
-        if(!noteRepository.existsById(id)) {
-            return null;
+        Note existingNote = noteRepository.findById(id).orElse(null);
+        if (existingNote != null) {
+            existingNote.setTitle(note.getTitle());
+            existingNote.setContent(note.getContent());
+            return noteRepository.save(existingNote);
         }
-        note.setId(id);
-        return noteRepository.save(note);
+        return null;
     }
 
     @Override
